@@ -21,7 +21,7 @@
 #
 # Modified with permission by:
 # Erik Gomez <e@eriknicolasgomez.com>
-# https://github.com/eng
+# https://github.com/erikng
 # ================================================================================
 
 import sys
