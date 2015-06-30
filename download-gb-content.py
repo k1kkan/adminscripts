@@ -7,7 +7,7 @@
 # Requires GarageBand 10 to be installed onto the local machine.
 # This script downloads the content packages for GarageBand 10.
 #
-# GarageBand 10 Version: 10.0.3
+# GarageBand 10 Version: 10.1.0
 #
 # List package URLs:
 #       $ ./download-gb-content.py list
