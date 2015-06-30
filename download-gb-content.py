@@ -34,7 +34,7 @@ import shutil
 import argparse
 
 base_url = "file:///Applications/GarageBand.app/Contents/Resources/"
-web_url = "http://audiocontentdownload.apple.com/lp10_ms3_content_2013/"
+web_url = "http://audiocontentdownload.apple.com/lp10_ms3_content_2015/"
 version = "1010" # For 10.0.3
 gb_plist_name = "garageband%s.plist" % version
 
