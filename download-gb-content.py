@@ -34,6 +34,7 @@ import shutil
 import argparse
 
 base_url = "file:///Applications/GarageBand.app/Contents/Resources/"
+web_url_legacy = "http://audiocontentdownload.apple.com/lp10_ms3_content_2013/"
 web_url = "http://audiocontentdownload.apple.com/lp10_ms3_content_2015/"
 version = "1010" # For 10.1.0
 gb_plist_name = "garageband%s.plist" % version
@@ -148,7 +149,11 @@ def process_content_item(content_item, parent_items, list_only=False):
             download_name = package_dict.get('DownloadName', None)
             download_size = package_dict.get('DownloadSize', None)
             save_path = "".join([relative_path, '/', download_name])
-            download_url = ''.join([web_url, download_name])
+            if "../lp10_ms3_content_2013/" not in download_name:
+            	download_url = ''.join([web_url, download_name])
+            else:
+            	download_name = download_name.replace("../lp10_ms3_content_2013/", "")
+            	download_url = ''.join([web_url_legacy, download_name])
             if list_only:
                 print download_url
             else:
