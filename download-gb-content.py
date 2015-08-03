@@ -32,6 +32,7 @@ import plistlib
 import urllib2
 import shutil
 import argparse
+from urllib2 import HTTPError
 
 base_url = "file:///Applications/GarageBand.app/Contents/Resources/"
 web_url_legacy = "http://audiocontentdownload.apple.com/lp10_ms3_content_2013/"
