@@ -40,7 +40,6 @@ web_url = "http://audiocontentdownload.apple.com/lp10_ms3_content_2015/"
 version = "1010" # For 10.1.0
 gb_plist_name = "garageband%s.plist" % version
 
-
 def human_readable_size(bytes):
     """
     Converts bytes to human readable string
@@ -91,17 +90,19 @@ def process_package_download(download_url, save_path, download_size):
     Downloads the URL if it doesn't already exist 
     """
     download_size_string = human_readable_size(download_size)
+    site = urllib2.urlopen(download_url)
+    meta = site.info()
     if os.path.exists(save_path):
         # Check the local file size and download if it's smaller.
         # TODO: Get a better way for this. The 'DownloadSize' key in gb_plist
         # seems to be wrong for a number of packages.
-        if os.path.getsize(save_path) < download_size:
-            print "Remote file is larger. Downloading %s from %s" % (download_size_string, download_url)
+        if int(os.path.getsize(save_path)) < int(meta.getheaders("Content-Length")[0]):
+            print "Local file size is %s. Remote file is larger. Downloading %s bytes from %s" % (os.path.getsize(save_path), meta.getheaders("Content-Length")[0], download_url)
             download_package_as(download_url, save_path)
         else:
             print "Skipping already downloaded package %s" % download_url
     else:
-        print "Downloading %s from %s" % (download_size_string, download_url)
+        print "Downloading %s bytes from %s" % (meta.getheaders("Content-Length")[0], download_url)
         download_package_as(download_url, save_path)
     
     pass
@@ -150,29 +151,35 @@ def process_content_item(content_item, parent_items, list_only=False):
             download_name = package_dict.get('DownloadName', None)
             download_size = package_dict.get('DownloadSize', None)
             save_path = "".join([relative_path, '/', download_name])
+            if "../lp10_ms3_content_2013/" in save_path:
+            	save_path = save_path.replace("../lp10_ms3_content_2013/", "")
             if "../lp10_ms3_content_2013/" not in download_name:
             	download_url = ''.join([web_url, download_name])
             else:
             	download_name = download_name.replace("../lp10_ms3_content_2013/", "")
             	download_url = ''.join([web_url_legacy, download_name])
+            site = urllib2.urlopen(download_url)
+            meta = site.info()
             if list_only:
-                print download_url
+                print download_url, 'File size: ', meta.getheaders("Content-Length")[0]
             else:
                 process_package_download(download_url, save_path, download_size)
-            
-        
+               
         if isinstance(package_name, list):
             for i in package_name:
                 package_dict = packages.get(i, {})
                 download_name = package_dict.get('DownloadName', None)
+                if "../lp10_ms3_content_2013/" not in download_name:
+            		download_name = download_name.replace("../lp10_ms3_content_2013/", "")
                 download_size = package_dict.get('DownloadSize', None)
                 save_path = "".join([relative_path, '/', download_name])
                 download_url = ''.join([base_url, download_name])
+                site = urllib2.urlopen(download_url)
+                meta = site.info()
                 if list_only:
-                    print download_url
+                    print download_url, 'File size: ', meta.getheaders("Content-Length")[0]
                 else:
                     process_package_download(download_url, save_path, download_size)
-
 
 def main(argv=None):
     # ================
@@ -218,7 +225,6 @@ def main(argv=None):
             process_content_item(content_item, None, list_only=False)
     
     return 0
-
 
 if __name__ == '__main__':
     sys.exit(main())
